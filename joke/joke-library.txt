@@ -1,0 +1,10 @@
+I went to a street where the houses were numbered 8k, 16k, 32k, 64k, 128k, 256k and 512k. \nIt was a trip down Memory Lane.
+If doctors were like software engineers, they would say things like \n“Have you tried killing yourself and being reborn?”
+//be nice to the CPU \nThread_sleep(1);
+A programmer’s wife asks: “Would you go to the shop and pick up a loaf of bread? \nAnd if they have eggs, get a dozen.” The programmer returns home with 12 loaves of bread. \n“They had eggs.”
+“Debugging” is like being the detective in a crime drama where you are also the murderer.
+Why do programmers always mix up Christmas and Halloween? \nBecause Dec 25 is Oct 31.
+The best thing about a Boolean is that even if you are wrong, you are only off by a bit.
+An optimist says “The glass is half full.”\nA pessimist says “The glass is half empty.” \nA programmer says “The glass is twice as large as necessary.”
+A programmer had a problem. He thought to himself, “I know, I’ll solve it with threads!” \nhas Now problems. two he
+Why do Java programmers have to wear glasses?\nBecause they don’t C#.
