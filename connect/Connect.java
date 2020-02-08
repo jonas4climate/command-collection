@@ -175,14 +175,14 @@ public class Connect {
 
       System.out.print("Enter name of Player 1: ");
       PLAYER1 = scanner.nextLine();
-      System.out.println(String.format("%s's occupied spots will be marked using an 'X'", PLAYER1));
+      System.out.println(String.format("%s places '%s' discs", PLAYER1, getSymbol(Player.P1)));
 
       System.out.print("Enter name of Player 2: ");
       PLAYER2 = scanner.nextLine();
-      System.out.println(String.format("%s's occupied spots will be marked using an 'O'", PLAYER2));
+      System.out.println(String.format("%s places '%s' discs", PLAYER2, getSymbol(Player.P2)));
 
       gameRunning = true;
-      playerOfTurn = Player.P1;
+      playerOfTurn = Player.P2;
       displayGameState();
    }
 
