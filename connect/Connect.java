@@ -16,7 +16,23 @@ public class Connect {
    private Scanner scanner;
 
    public static void main(String[] args) {
-      Connect game = new Connect(4, 7, 6);
+      Connect game = null;
+      try {
+         if (args.length == 3) {
+            int connectToWin = Integer.parseInt(args[0]);
+            int X = Integer.parseInt(args[1]);
+            int Y = Integer.parseInt(args[2]);
+
+            if (connectToWin > 1 && connectToWin <= X && connectToWin <= Y && X > 1 && Y > 1)
+               game = new Connect(connectToWin, X, Y);
+         }
+      } catch (Exception e) {
+         System.out.println("There has been invalid input. The default game was chosen instead.");
+      }
+
+      // If not initialized with proper paramters
+      if (game == null)
+         game = new Connect(4, 7, 6);
       game.run();
    }
 
