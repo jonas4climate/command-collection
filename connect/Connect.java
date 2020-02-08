@@ -86,14 +86,14 @@ public class Connect {
       state.append("\n");
       // Add map as string
       for (int y = Y-1; y >= 0; y--) {
-         state.append(y);
+         //state.append(y); // Uncomment to display rows
          for (int x = 0; x < X; x++) {
             state.append(" " + getSymbol(map[x][y]));
          }
          state.append("\n");
       }
 
-      state.append(' ');
+      //state.append(' '); // Uncomment if displaying rows
       // Add for collumns below
       for (int i = 0; i < X; i++) {
          state.append(" " + i);
