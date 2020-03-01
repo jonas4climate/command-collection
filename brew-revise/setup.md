@@ -1,0 +1,1 @@
+Export an alias calling `python3 /path/to/brew-revise.py`
