@@ -33,7 +33,7 @@ for formula in formulae:
 		while (action != 'yes' and action != 'y' and action != 'no' and action != 'n'):
 			if action == 'info':
 				subprocess.run(['man', formula])
-			if action == 'stop':
+			elif action == 'stop':
 				print('\nDo you still want to clean up?')
 				action = input().lower()
 				if action == 'yes' or action == 'y':
@@ -41,16 +41,16 @@ for formula in formulae:
 					subprocess.run(['brew', 'cleanup'])
 				exit()
 			else:
-				print('The input was unrecognized. Please check your command and enter again.')
+				print('The input was unrecognized.')
 			action = input().lower()
 		if action == 'yes' or action == 'y':
 			# Deleting formula in brew
 			subprocess.run(['brew', 'uninstall', formula])
 			print('Deleted!')
-		elif action == 'no' or action == 'n':
-			print('Checking next formula...')
-	else:
-		print('\nThere are formulae depending on: ' + formula)
+		#elif action == 'no' or action == 'n':
+		#	print('Looking for next formula...')
+	#else:
+	#	print('\nThere are formulae depending on: ' + formula)
 		#subprocess.run(['brew', 'desc', formula])
 
 print('\nCleaning up...')
