@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 # Read jokes from joke-library.txt file
-jokes=("${(@f)$(cat ~/CS/Additional/Projects/fun-commands/joke/joke-library.txt)}")
+jokes=("${(@f)$(cat ~/CS/Additional/Projects/command-collection/joke/joke-library.txt)}")
 
 # Set defaults for flags
 a_flag="false"
