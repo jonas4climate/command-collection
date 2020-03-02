@@ -1,7 +1,8 @@
 #!/bin/zsh
 
+path_to_dir=${0:a:h}
 # Read jokes from joke-library.txt file
-jokes=("${(@f)$(cat ~/CS/Additional/Projects/command-collection/joke/joke-library.txt)}")
+jokes=("${(@f)$(cat ${path_to_dir}/joke-library.txt)}")
 
 # Set defaults for flags
 a_flag="false"
