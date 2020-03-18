@@ -3,8 +3,8 @@ import os
 from pathlib import Path
 
 # Print purpose of script
-print('\nYou started the interactive brew-revise process.\n'
-	+ 'This script runs in an interactive environment and scans your brew formulae for leftover former dependencies you don\'t need anymore.')
+print('\nYou started the brew-revise process.\n'
+	+ 'This script runs in an interactive environment and scans your brew formulae for leftover former dependencies and isolate formula you may not need anymore.')
 
 # Print command usage
 print('\nCommands you can use:\n' + '-----------\n' 
@@ -25,7 +25,7 @@ revise_dir = home + '/.brew-revise'
 fav_path = revise_dir + '/favourites.csv'
 hist_path = revise_dir + '/history.csv'
 
-# Ensure fav path + file exists, otherwise create it
+# Ensure brew-revise directory and files exists, otherwise create them
 if not os.path.exists(revise_dir):
 	os.mkdir(revise_dir)
 Path(fav_path).touch()
@@ -34,14 +34,18 @@ Path(hist_path).touch()
 print('\nStarted scanning...')
 
 # Get stored favourites 
-with open(home + '/.brew-revise/favourites.csv', 'r') as file:
+with open(fav_path, 'r') as file:
     favs = file.read().replace('\n', '')
+
+# New line for every new session 
+with open(hist_path, 'a') as file:
+	file.write('\n') 
 
 for formula in formulae:
 	# Get brew formula dependencies
 	dependencies = subprocess.run(['brew', 'uses', '--installed', '--recursive', formula], stdout=subprocess.PIPE).stdout.decode('utf-8').split()
 
-	# No dependencies
+	# No dependencies and not in favourites
 	if not dependencies and not favs.__contains__(formula):
 		print('\n')
 		# Decide wheter to delete formula
@@ -63,7 +67,7 @@ for formula in formulae:
 				subprocess.run(['brew', 'info', formula])
 
 			# End script
-			elif action == 'end':
+			elif action == 'stop' or action == 'end':
 				print('\nDo you still want to clean up?')
 				action = input().lower()
 				if action == 'yes' or action == 'y':
@@ -80,16 +84,14 @@ for formula in formulae:
 		# Remove formula
 		if action == 'rm':
 			subprocess.run(['brew', 'uninstall', formula])
-			f = open(hist_path, 'a')
-			f.write(action + ': ' + formula + ', ')
-			f.close()
+			with open(hist_path, 'a') as file:
+				file.write(action + ': ' + formula + ', ')
 			print('Deleted!')
 
 		# Add to favourites to skip asking in the future
 		elif action == 'fav':
-			f = open(fav_path, 'a')
-			f.write(formula + ', ')
-			f.close()
+			with open(fav_path, 'a') as file:
+				file.write(formula + ', ')
 
 		#elif action == 'skip':
 			# Do nothing
