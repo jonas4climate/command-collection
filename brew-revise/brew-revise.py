@@ -1,57 +1,80 @@
 import subprocess
+import os 
+from pathlib import Path
 
-print('\nYou started the interactive brew-revise process.\nThis script will go through your brew formulae and allows you to delete formulae which are independent i.e. don\'t have other formulae depending on them.')
+# Print purpose of script
+print('\nYou started the interactive brew-revise process.\n'
+	+ 'This script runs in an interactive environment and scans your brew formulae for leftover former dependencies you don\t need anymore.')
 
 # Print command usage
 print('\nCommands you can use:\n' + '-----------\n' 
-	+ '- "stop" to stop further checking\n'
-	+ '- "info" to get the manpage of the formula\n' 
-	+ '- "yes" or "y" to confirm deletion\n' 
-	+ '- "no" or "n" to keep this formula\n')
+	+ '- "end" to stop further checking\n'
+	+ '- "man" to get the manpage of the formula\n' 
+	+ '- "desc" to get the brew description\n'
+	+ '- "info" to get links and more info than "desc"\n'
+	+ '- "rm" to delete formula\n' 
+	+ '- "skip" to keep formula and continue searching\n')
 
-# Returns byte array of stdout output of command
-formulae = subprocess.run(['brew', 'list'], stdout=subprocess.PIPE)
-# Convert to string
-formulae = formulae.stdout.decode('utf-8')
-# Convert into list of words
-formulae = formulae.split()
+# Gets all brew formulae of user
+formulae = subprocess.run(['brew', 'list'], stdout=subprocess.PIPE).stdout.decode('utf-8').split()
+
+home = str(Path.home())
+
+# Ensure fav path + file exists, otherwise create it
+if not os.path.exists(home + '/.brew-revise'):
+	os.mkdir(home + '/.brew-revise')
+Path(home + '/.brew-revise/favourites.csv').touch()
+
+# Get stored favourites 
+with open(home + '/.brew-revise/favourites.csv', 'r') as file:
+    favs = file.read().replace('\n', '')
 
 for formula in formulae:
 	# Get brew formula dependencies
-	dependencies = subprocess.run(['brew', 'uses', '--installed', '--recursive', formula], stdout=subprocess.PIPE)
-	dependencies = dependencies.stdout.decode('utf-8')
+	dependencies = subprocess.run(['brew', 'uses', '--installed', '--recursive', formula], stdout=subprocess.PIPE).stdout.decode('utf-8').split()
 
 	# No dependencies
 	if not dependencies:
 		print('\n')
 		# Decide wheter to delete formula
-		print('Independent formula: ' + formula + '. Do you want to delete it?')
-		subprocess.run(['brew', 'desc', formula])
+		print('Independent formula: ' + formula)
 		action = input().lower()
 
 		# Intermediary actions 
-		while (action != 'yes' and action != 'y' and action != 'no' and action != 'n'):
-			if action == 'info':
+		while (action != 'rm' and action != 'skip'):
+			# Man page
+			if action == 'man':
 				subprocess.run(['man', formula])
-			elif action == 'stop':
+
+			# Brew description
+			elif action == 'desc':
+				subprocess.run(['brew', 'desc', formula])
+
+			# Brew information
+			elif action == 'info':
+				subprocess.run(['brew', 'info', formula])
+
+			# End script
+			elif action == 'end':
 				print('\nDo you still want to clean up?')
 				action = input().lower()
 				if action == 'yes' or action == 'y':
 					print('Quickly cleaning up...')
 					subprocess.run(['brew', 'cleanup'])
 				exit()
+
+			# Other (unrecognized) input
 			else:
 				print('The input was unrecognized.')
+
 			action = input().lower()
-		if action == 'yes' or action == 'y':
-			# Deleting formula in brew
+
+		# Remove formula
+		if action == 'rm':
 			subprocess.run(['brew', 'uninstall', formula])
 			print('Deleted!')
-		#elif action == 'no' or action == 'n':
-		#	print('Looking for next formula...')
 	#else:
-	#	print('\nThere are formulae depending on: ' + formula)
-		#subprocess.run(['brew', 'desc', formula])
+	#	print('\nThere are formulae depending on ' + formula)
 
 print('\nCleaning up...')
 subprocess.run(['brew', 'cleanup'])
