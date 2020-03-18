@@ -31,6 +31,8 @@ if not os.path.exists(revise_dir):
 Path(fav_path).touch()
 Path(hist_path).touch()
 
+print('\nStarted scanning...')
+
 # Get stored favourites 
 with open(home + '/.brew-revise/favourites.csv', 'r') as file:
     favs = file.read().replace('\n', '')
