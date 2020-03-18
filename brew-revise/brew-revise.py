@@ -4,26 +4,32 @@ from pathlib import Path
 
 # Print purpose of script
 print('\nYou started the interactive brew-revise process.\n'
-	+ 'This script runs in an interactive environment and scans your brew formulae for leftover former dependencies you don\t need anymore.')
+	+ 'This script runs in an interactive environment and scans your brew formulae for leftover former dependencies you don\'t need anymore.')
 
 # Print command usage
 print('\nCommands you can use:\n' + '-----------\n' 
 	+ '- "end" to stop further checking\n'
 	+ '- "man" to get the manpage of the formula\n' 
-	+ '- "desc" to get the brew description\n'
-	+ '- "info" to get links and more info than "desc"\n'
+	+ '- "desc" to get the concise brew description\n'
+	+ '- "info" to get homepage and more information\n'
 	+ '- "rm" to delete formula\n' 
-	+ '- "skip" to keep formula and continue searching\n')
+	+ '- "skip" to keep formula and continue searching\n'
+	+ '- "fav" to skip and stop asking for this formula in the future')
 
 # Gets all brew formulae of user
 formulae = subprocess.run(['brew', 'list'], stdout=subprocess.PIPE).stdout.decode('utf-8').split()
 
+# Useful paths
 home = str(Path.home())
+revise_dir = home + '/.brew-revise'
+fav_path = revise_dir + '/favourites.csv'
+hist_path = revise_dir + '/history.csv'
 
 # Ensure fav path + file exists, otherwise create it
-if not os.path.exists(home + '/.brew-revise'):
-	os.mkdir(home + '/.brew-revise')
-Path(home + '/.brew-revise/favourites.csv').touch()
+if not os.path.exists(revise_dir):
+	os.mkdir(revise_dir)
+Path(fav_path).touch()
+Path(hist_path).touch()
 
 # Get stored favourites 
 with open(home + '/.brew-revise/favourites.csv', 'r') as file:
@@ -34,14 +40,14 @@ for formula in formulae:
 	dependencies = subprocess.run(['brew', 'uses', '--installed', '--recursive', formula], stdout=subprocess.PIPE).stdout.decode('utf-8').split()
 
 	# No dependencies
-	if not dependencies:
+	if not dependencies and not favs.__contains__(formula):
 		print('\n')
 		# Decide wheter to delete formula
 		print('Independent formula: ' + formula)
 		action = input().lower()
 
 		# Intermediary actions 
-		while (action != 'rm' and action != 'skip'):
+		while (action != 'rm' and action != 'skip' and action != 'fav'):
 			# Man page
 			if action == 'man':
 				subprocess.run(['man', formula])
@@ -72,7 +78,19 @@ for formula in formulae:
 		# Remove formula
 		if action == 'rm':
 			subprocess.run(['brew', 'uninstall', formula])
+			f = open(hist_path, 'a')
+			f.write(action + ': ' + formula + ', ')
+			f.close()
 			print('Deleted!')
+
+		# Add to favourites to skip asking in the future
+		elif action == 'fav':
+			f = open(fav_path, 'a')
+			f.write(formula + ', ')
+			f.close()
+
+		#elif action == 'skip':
+			# Do nothing
 	#else:
 	#	print('\nThere are formulae depending on ' + formula)
 
